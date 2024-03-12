@@ -1,0 +1,318 @@
+//CARD
+#include <iostream>
+#include <vector>
+#include <string>
+#include <climits>
+
+using namespace std;
+
+struct Item {
+    string name;
+    int price;
+};
+
+struct ShoppingCart {
+    int id;
+    vector<Item> items;
+};
+
+void printAveragePriceOfLowestItems(vector<ShoppingCart>& shoppingCarts) {
+    for (auto& cart : shoppingCarts) {
+        int minPrice = INT_MAX;
+        int totalPrice = 0;
+        int itemCount = 0;
+
+        for (const auto& item : cart.items) {
+            if (item.price < minPrice) {
+                minPrice = item.price;
+            }
+        }
+
+        for (const auto& item : cart.items) {
+            if (item.price == minPrice) {
+                totalPrice += item.price;
+                itemCount++;
+            }
+        }
+
+        if (itemCount > 0) {
+            double average = static_cast<double>(totalPrice) / itemCount;
+            cout << "Average: " << average << endl;
+        }
+    }
+}
+
+void printHighestPricedItem(vector<ShoppingCart>& shoppingCarts) {
+    int maxPrice = INT_MIN;
+    string productName;
+    int cartId;
+
+    for (auto& cart : shoppingCarts) {
+        for (const auto& item : cart.items) {
+            if (item.price > maxPrice) {
+                maxPrice = item.price;
+                productName = item.name;
+                cartId = cart.id;
+            }
+        }
+    }
+
+    cout << "Shopping cart id: " << cartId << endl;
+    cout << "Product: " << productName << endl;
+}
+
+int main() {
+    int numCarts;
+    cin >> numCarts;
+
+    vector<ShoppingCart> shoppingCarts(numCarts);
+
+    for (int i = 0; i < numCarts; ++i) {
+        int numItems;
+        cin >> numItems;
+        shoppingCarts[i].id = i + 1;
+
+        for (int j = 0; j < numItems; ++j) {
+            Item newItem;
+            cin >> newItem.name >> newItem.price;
+            shoppingCarts[i].items.push_back(newItem);
+        }
+    }
+
+    printAveragePriceOfLowestItems(shoppingCarts);
+    printHighestPricedItem(shoppingCarts);
+
+    return 0;
+}
+//NAJPOPULAREN KURS
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int MAX_LEN = 50;
+const int MAX_COURSES = 10;
+
+struct Course {
+    string name;
+    int code;
+    int num_students;
+};
+
+struct Student {
+    string name;
+    int index;
+    int num_courses;
+    int courses[MAX_COURSES];
+};
+
+int get_most_popular_course(Course courses[], int num_courses) {
+    int max_students = 0;
+    int popular_course_code = -1;
+
+    for (int i = 0; i < num_courses; i++) {
+        if (courses[i].num_students > max_students) {
+            max_students = courses[i].num_students;
+            popular_course_code = courses[i].code;
+        }
+    }
+
+    return popular_course_code;
+}
+
+int main() {
+    int num_students, num_courses;
+    Course courses[MAX_COURSES];
+    Student students[MAX_LEN];
+
+    // Внеси го бројот на студенти и курсеви
+    cin >> num_students >> num_courses;
+
+    // Внеси ги информациите за курсевите
+    for (int i = 0; i < num_courses; i++) {
+        cin >> courses[i].name >> courses[i].code;
+        courses[i].num_students = 0;
+    }
+
+    // Внеси ги информациите за студентите
+    for (int i = 0; i < num_students; i++) {
+        cin >> students[i].name >> students[i].index >> students[i].num_courses;
+        
+        for (int j = 0; j < students[i].num_courses; j++) {
+            cin >> students[i].courses[j];
+            // Зголеми го бројот на студенти за курсот
+            for (int k = 0; k < num_courses; k++) {
+                if (courses[k].code == students[i].courses[j]) {
+                    courses[k].num_students++;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Пресметај го најпопуларниот курс
+    int popular_course_code = get_most_popular_course(courses, num_courses);
+
+    // Испечати го најпопуларниот курс
+    for (int i = 0; i < num_courses; i++) {
+        if (courses[i].code == popular_course_code) {
+            cout << "Najpopularen kurs e: " << courses[i].name << endl;
+            break;
+        }
+    }
+
+    return 0;
+}
+//STARI
+#include <iostream>
+
+using namespace std;
+
+struct Transaction{
+    int id;
+    int suma;
+    int provizija;
+    bool kreditna;
+};
+int main()
+{
+    
+    int N;
+    cin>>N;
+    Transaction transakcii[N];
+    bool debit=true;
+    
+    for(int i=0;i<N;i++){
+        cin>>transakcii[i].id>>transakcii[i].suma>>transakcii[i].provizija>>transakcii[i].kreditna;
+        if(transakcii[i].kreditna==1){
+        debit=false;
+        cout<<transakcii[i].id<<" "<<transakcii[i].suma+transakcii[i].provizija<<endl;
+        }
+    }
+    if(debit)
+    cout<<"No credit card transaction"<<endl;
+
+    return 0;
+}
+//2
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct Engine
+{
+    int hrspwr; //horsepower for car
+    int torque; //torque for car
+};
+
+struct Car
+{
+    char name[20]; //ime na kola
+    int year; //godina na proizvodstvo
+    Engine motor; //motor sto ke referencira od strukturata Engine
+};
+
+void printCars (Car koli[], int N)
+{
+    int najmal = koli[0].motor.hrspwr; //prva kola so najmalku konjski sili
+    int najmal2 = koli[0].motor.hrspwr; //vtora kola so najmalku konjski sili
+    int indeks1 = 0; //indeks na prvata kola
+    int indeks2 = 0; //indeks na vtorata kola
+    for(int i=0;i<N;i++) //gi izminuvame/proveruvame site koli - ja naogjame prvata kola so najmalku konjski sili
+    {
+        if(koli[i].motor.hrspwr<najmal)
+        {
+            najmal = koli[i].motor.hrspwr;
+            indeks1 = i;
+        }
+    }
+    for(int i=0;i<N;i++) //gi izminuvame/proveruvame site koli - ja naogjame vtorata kola so najmalku konjski sili
+    {
+        if(koli[i].motor.hrspwr<najmal2 && i!=indeks1)
+        {
+            najmal2 = koli[i].motor.hrspwr;
+            indeks2 = i;
+        }
+    }
+    if(koli[indeks1].motor.torque > koli[indeks2].motor.torque)
+    {
+        cout<<"Manufacturer: "<<koli[indeks1].name<<endl;
+        cout<<"Horsepower: "<<koli[indeks1].motor.hrspwr<<endl;
+        cout<<"Torque: "<<koli[indeks1].motor.torque<<endl;
+    }
+    else
+    {
+        cout<<"Manufacturer: "<<koli[indeks2].name<<endl;
+        cout<<"Horsepower: "<<koli[indeks2].motor.hrspwr<<endl;
+        cout<<"Torque: "<<koli[indeks2].motor.torque<<endl;
+    }
+}
+
+int main()
+{
+    int N; //kolku strukturi ke imame
+    cin>>N; //vnesuvame kolku koli ke vnesuvame vo programata
+    Car koli[N]; //niza od strukturi
+    for(int i=0;i<N;i++) //vnesuvame informacii za kolite
+    {
+        cin>>koli[i].name;
+        cin>>koli[i].year;
+        cin>>koli[i].motor.hrspwr;
+        cin>>koli[i].motor.torque;
+        
+    }
+    printCars(koli, N); //se povikuva funkcijata 'printCars'
+    return 0;
+}
+//3
+#include <iostream>
+
+using namespace std;
+
+struct FootballPlayer{
+    char name[50];
+    int dres, golovi;
+};
+
+struct FootballTeam{
+    char name[100];
+    FootballPlayer igraci[11];
+    int vkupnoGol=0;
+    
+    void input(){
+        cin>>name;
+        for(int i=0;i<11;i++){
+            cin>>igraci[i].name>>igraci[i].dres>>igraci[i].golovi;
+            vkupnoGol+=igraci[i].golovi;
+        }
+    }
+};
+
+
+
+void bestTeam(FootballTeam * teams, int n){
+    //pechati timot so najmnogu dadeni golovi
+    //ako ima dva isti istpecati go prviot vnesen
+    int indexMaxGol=0;
+    int maxGol=0;
+    for(int i=0;i<n;i++){
+        if(teams[i].vkupnoGol>maxGol){
+            maxGol=teams[i].vkupnoGol;
+            indexMaxGol=i;
+        }
+    }
+    cout<<"Najdobar tim e: "<<teams[indexMaxGol].name<<endl;
+}
+
+int main()
+{
+    
+    int n;
+    cin>>n;
+    FootballTeam timovi[n];
+    for(int i=0;i<n;i++){
+        timovi[i].input();
+    }
+    bestTeam(timovi,n);
+    
+    return 0;
+}
